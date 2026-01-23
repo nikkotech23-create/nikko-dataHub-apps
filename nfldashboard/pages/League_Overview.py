@@ -1,28 +1,27 @@
 import streamlit as st
-import pandas as pd
+from core.data_loader import load_weekly
+from core.metrics import compute_team_epa
+from core.visuals import gradient_header, metric_row, epa_heatmap, filter_bar
 
-st.title("🏟️ League Overview")
+gradient_header("League Overview", "Standings, efficiency, and league‑wide tendencies.")
 
-st.markdown("High-level view of standings, power rankings, and playoff picture.")
+filters = filter_bar({
+    "Season": [2024, 2023, 2022]
+})
+season = filters["Season"]
 
-# Sidebar filters (shared pattern)
-season = st.sidebar.selectbox("Season", [2024, 2023, 2022], index=0)
+weekly = load_weekly([season])
+team_summary = compute_team_epa(weekly)
 
-# Placeholder standings table
-data = {
-    "Team": ["KC", "BUF", "PHI", "SF", "DAL"],
-    "W": [12, 11, 11, 12, 10],
-    "L": [5, 6, 6, 5, 7],
-    "ELO": [1650, 1605, 1590, 1665, 1570]
-}
-df = pd.DataFrame(data)
+metric_row([
+    ("Avg EPA/play", f"{team_summary['epa_per_play'].mean():+.3f}"),
+    ("Avg Success Rate", f"{team_summary['success_rate'].mean():.1%}"),
+    ("Total Teams", f"{len(team_summary)}"),
+])
 
-st.subheader(f"Standings & Power Ratings — {season}")
-st.dataframe(df, use_container_width=True)
+st.subheader("Team Efficiency Table")
+st.dataframe(team_summary, use_container_width=True)
 
-col1, col2, col3 = st.columns(3)
-col1.metric("Avg League ELO", "1502")
-col2.metric("Top Team ELO", "1665", "+45")
-col3.metric("Playoff Locks", "6")
-
-
+st.subheader("EPA by Down & Field Position")
+pbp = load_pbp([season])
+epa_heatmap(pbp, "down", "yardline_100", value="epa", title="EPA by Down & Field Position")
