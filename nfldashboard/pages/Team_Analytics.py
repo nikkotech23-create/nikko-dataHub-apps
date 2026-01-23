@@ -1,18 +1,38 @@
 import streamlit as st
-from core.data_loader import load_weekly, load_teams
+from core.data_loader import load_weekly, load_pbp
+from core.metrics import compute_team_epa
+from core.visuals import gradient_header, metric_row, line_chart, team_color, filter_bar
 
-st.title("📊 Team Analytics")
+gradient_header("Team Analytics", "Deep‑dive into team efficiency and tendencies.")
 
-season = st.sidebar.selectbox("Season", [2024, 2023, 2022])
-team = st.sidebar.selectbox("Team", ["KC", "BUF", "PHI", "SF", "DAL"])
+filters = filter_bar({
+    "Season": [2024, 2023, 2022],
+    "Team": ["KC", "BUF", "PHI", "SF", "DAL"]
+})
+season = filters["Season"]
+team = filters["Team"]
 
-wwekly = load_weekly([season])
-teams = load_teams()
+weekly = load_weekly([season])
+team_summary = compute_team_epa(weekly)
+row = team_summary[team_summary["team"] == team].iloc[0]
 
-team_stats = weekly[weekly["team"] == team]
+metric_row([
+    ("EPA/play", f"{row['epa_per_play']:+.3f}"),
+    ("Success Rate", f"{row['success_rate']:.1%}"),
+    ("Total Plays", f"{int(row['plays'])}"),
+])
 
-st.subheader(f"{team} — Weekly EPA ({season})")
-st.dataframe(team_stats[["week", "epa"]])
+pbp = load_pbp([season])
+team_pbp = pbp[pbp["posteam"] == team].copy()
+team_pbp["Week"] = team_pbp["week"]
+
+line_chart(
+    team_pbp.groupby("Week", as_index=False)["epa"].mean(),
+    "Week",
+    "epa",
+    title=f"{team} EPA by Week",
+    color=team_color(team)
+)
 
 
 
