@@ -3,6 +3,12 @@ import pandas as pd
 import altair as alt
 
 from core.data_loader import load_pbp, load_schedules, load_teams
+from core.metrics import compute_win_prob_series
+from core.visuals import win_prob_chart
+
+wp = compute_win_prob_series(game_pbp)
+if wp is not None:
+    win_prob_chart(wp)
 
 st.set_page_config(layout="wide")
 st.title("🎮 Game Center")
