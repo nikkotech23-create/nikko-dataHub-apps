@@ -40,19 +40,41 @@ def refine_region(continent, country):
 # --------------------------------------------------
 # World Bank fetch
 # --------------------------------------------------
-
 def fetch_indicator(indicator_code):
     url = (
         f"https://api.worldbank.org/v2/country/all/indicator/{indicator_code}"
         "?format=json&per_page=20000"
     )
     r = requests.get(url).json()
+
+    # Some API responses return only 1 element (error)
+    if len(r) < 2:
+        return pd.DataFrame(columns=["country", "iso3", "year", indicator_code])
+
     data = r[1]
-    df = pd.DataFrame(data)
-    df = df[["country", "countryiso3code", "date", "value"]]
-    df.columns = ["country", "iso3", "year", indicator_code]
-    df["year"] = df["year"].astype(int)
+
+    rows = []
+    for item in data:
+        # country can be dict or string
+        country_name = (
+            item["country"]["value"]
+            if isinstance(item["country"], dict)
+            else item["country"]
+        )
+
+        iso3 = item.get("countryiso3code", None)
+        year = item.get("date", None)
+        value = item.get("value", None)
+
+        # Skip rows with missing year
+        if year is None:
+            continue
+
+        rows.append([country_name, iso3, int(year), value])
+
+    df = pd.DataFrame(rows, columns=["country", "iso3", "year", indicator_code])
     return df
+
 
 @st.cache_data(show_spinner=True)
 def load_worldbank_data():
@@ -370,4 +392,5 @@ with tab_compare:
             data=excel_comp,
             file_name=f"gdp_comparison_{compare_year}.xlsx",
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+
         )
