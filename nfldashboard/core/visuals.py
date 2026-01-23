@@ -21,7 +21,20 @@ def gradient_header(title, subtitle=None):
         unsafe_allow_html=True
     )
 
+TEAM_COLORS = {
+    "KC": "#E31837",
+    "BUF": "#00338D",
+    "PHI": "#004C54",
+    "SF": "#AA0000",
+    "DAL": "#003594",
+    "GB": "#203731",
+    "CHI": "#0B162A",
+    "BAL": "#241773",
+    # Add more as needed
+}
 
+def team_color(team):
+    return TEAM_COLORS.get(team, "#00E0FF")
 # -----------------------------
 # METRIC CARDS
 # -----------------------------
