@@ -4,6 +4,24 @@ import streamlit as st
 import altair as alt
 import pandas as pd
 
+def gradient_header(title, subtitle=None):
+    st.markdown(
+        f"""
+        <div style="
+            padding: 32px 24px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #0A0F24 0%, #111C44 40%, #1A2A6C 100%);
+            border: 1px solid rgba(0, 224, 255, 0.25);
+            box-shadow: 0 0 25px rgba(0, 224, 255, 0.15);
+        ">
+            <h1 style="color:#00E0FF; margin-bottom:0;">{title}</h1>
+            {f'<p style="color:#D1D5DB; margin-top:8px;">{subtitle}</p>' if subtitle else ''}
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+
 # -----------------------------
 # METRIC CARDS
 # -----------------------------
