@@ -3,12 +3,26 @@ import pandas as pd
 import altair as alt
 
 from core.data_loader import load_pbp, load_schedules, load_teams
-from core.metrics import compute_win_prob_series
-from core.visuals import win_prob_chart
+from core.visuals import gradient_header, win_prob_chart, drive_chart
+from core.metrics import compute_drive_summary, compute_win_prob_series
+
+gradient_header("Game Center", "Win probability, drives, and play‑by‑play explorer.")
+
+# …existing season/week/game selection…
 
 wp = compute_win_prob_series(game_pbp)
 if wp is not None:
+    st.subheader("Win Probability Over Time")
     win_prob_chart(wp)
+
+st.subheader("Drive Summary")
+drive_summary = compute_drive_summary(game_pbp)
+st.dataframe(drive_summary, use_container_width=True)
+
+st.subheader("Drive Chart (Field Position Over Time)")
+drive_df = game_pbp.copy()
+drive_df["play_index"] = range(1, len(drive_df) + 1)
+drive_chart(drive_df, title="Drive Progression")
 
 st.set_page_config(layout="wide")
 st.title("🎮 Game Center")
