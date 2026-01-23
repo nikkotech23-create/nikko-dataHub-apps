@@ -1,0 +1,5 @@
+streamlit
+nfl-data-py
+pandas
+altair
+numpy
