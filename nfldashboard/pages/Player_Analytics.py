@@ -3,6 +3,11 @@ import pandas as pd
 import altair as alt
 
 from core.data_loader import load_weekly, load_rosters
+from core.metrics import compute_qb_metrics
+from core.visuals import scatter_chart
+
+qb = compute_qb_metrics(weekly)
+scatter_chart(qb, "yards", "epa_per_dropback", title="QB Efficiency")
 
 st.set_page_config(layout="wide")
 st.title("🧍 Player Analytics")
