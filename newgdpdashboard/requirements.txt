@@ -1,10 +1,7 @@
-✔ Real GDP data from the World Bank
-✔ Every country mapped to the correct region
-✔ Americas split into:
-• 	North America
-• 	Latin America & Caribbean
-✔ Full dashboard:
-• 	Choropleth map
-• 	Bar ranking
-• 	KPIs
-• 	Time series
+streamlit
+pandas
+plotly
+requests
+pycountry
+pycountry_convert
+xlsxwriter
