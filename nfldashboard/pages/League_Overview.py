@@ -3,7 +3,7 @@ import pandas as pd
 
 st.title("🏟️ League Overview")
 
-t.markdown("High-level view of standings, power rankings, and playoff picture.")
+st.markdown("High-level view of standings, power rankings, and playoff picture.")
 
 # Sidebar filters (shared pattern)
 season = st.sidebar.selectbox("Season", [2024, 2023, 2022], index=0)
