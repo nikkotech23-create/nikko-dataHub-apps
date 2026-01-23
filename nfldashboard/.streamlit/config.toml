@@ -1,1 +1,7 @@
-
+[theme]
+base="dark"
+primaryColor="#00E0FF"        # neon cyan accent
+backgroundColor="#050814"     # deep navy / near-black
+secondaryBackgroundColor="#111827"
+textColor="#F9FAFB"
+font="sans serif"
